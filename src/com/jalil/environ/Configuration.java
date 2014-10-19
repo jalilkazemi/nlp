@@ -14,6 +14,7 @@ public class Configuration {
 	public static final String databaseName = "src/resources/main.db";
 	public static final String testDatabaseName = "src/resources/test.db";
 	public static final File migrationDirectory = new File("src/resources/migration");
+	public static final File testMigrationDirectory = new File("src/resources/test_migration");
 	
 	static {
 		if (!migrationDirectory.exists()) {
