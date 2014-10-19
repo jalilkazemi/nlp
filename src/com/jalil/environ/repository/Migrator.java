@@ -34,6 +34,12 @@ public class Migrator {
 	
 	public void applyUpdates() throws Exception {
 		initializeMigrationMetaData();
+		Map<Date, String> updates = findUpdates();
+		if (updates.size() == 0) 
+			return;
+	}
+	
+	private Map<Date, String> findUpdates() throws Exception {
 	}
 	
 	private void initializeMigrationMetaData() throws Exception {
