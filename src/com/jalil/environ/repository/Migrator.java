@@ -23,9 +23,11 @@ public class Migrator {
 	private final Connection con;
 	
 	private String migrationPrefixFormat = "yyyy-MM-dd hh-mm-ss";
+	private DateFormat sdf = new SimpleDateFormat(migrationPrefixFormat);
 	private static String CREATE_META_DATA = "CREATE TABLE IF NOT EXISTS migration_meta_data( " + 
 	 										 " id INTEGER PRIMARY KEY NOT NULL, " + 
 	 										 " migration_datetime DATETIME NOT NULL)";
+	private static String SELECT_META_DATA = "SELECT MAX(migration_datetime) FROM migration_meta_data";
 
 	public Migrator(File migrationDirectory, Connection con) {
 		this.migrationDirectory = migrationDirectory;
@@ -40,6 +42,17 @@ public class Migrator {
 	}
 	
 	private Map<Date, String> findUpdates() throws Exception {
+		Map<Date, String> dateMigrationMap = new TreeMap<Date, String>();
+		Date lastMigrationDate = null;
+		Statement stmt = con.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery(SELECT_META_DATA);
+			rs.next();
+			lastMigrationDate = rs.getDate(1);
+			if (lastMigrationDate == null) {
+				lastMigrationDate = new Date(sdf.parse("1970-01-01 00-00-00").getTime());				
+			}
+		} finally { stmt.close(); }
 	}
 	
 	private void initializeMigrationMetaData() throws Exception {
