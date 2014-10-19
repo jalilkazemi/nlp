@@ -53,6 +53,16 @@ public class Migrator {
 				lastMigrationDate = new Date(sdf.parse("1970-01-01 00-00-00").getTime());				
 			}
 		} finally { stmt.close(); }
+		File[] migrations = migrationDirectory.listFiles();
+		for (File migration : migrations) {
+			String prefix = migration.getName().substring(0, migrationPrefixFormat.length());
+			Date migrationDate = new Date(sdf.parse(prefix).getTime());
+			if (migrationDate.after(lastMigrationDate)) {
+				String migrationContent = Files.toString(migration, Charsets.UTF_8);
+				dateMigrationMap.put(migrationDate, migrationContent);				
+			}
+		}
+		return dateMigrationMap;
 	}
 	
 	private void initializeMigrationMetaData() throws Exception {
