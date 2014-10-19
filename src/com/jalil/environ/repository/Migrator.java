@@ -85,6 +85,15 @@ public class Migrator {
 	}
 	
 	private void applyUpdate(Statement stmt, PreparedStatement metaStmt, Date updateDate, String updateContent) throws SQLException {
+		StringTokenizer tokenizer = new StringTokenizer(updateContent, DEFAULT_DELIMITER);
+		while (tokenizer.hasMoreTokens()) {
+			String singleUpdate = tokenizer.nextToken().trim();
+			if (!singleUpdate.isEmpty()) {
+				stmt.addBatch(singleUpdate);				
+			}
+		}
+		metaStmt.setDate(1, updateDate);
+		metaStmt.addBatch();
 	}
 	
 	private void initializeMigrationMetaData() throws Exception {
