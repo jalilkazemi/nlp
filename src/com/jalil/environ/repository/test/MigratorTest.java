@@ -37,7 +37,17 @@ public class MigratorTest {
 		testMigrationDirectory.mkdirs();
 		migrator = new Migrator(testMigrationDirectory, con);		
 	}
-		
+	
+	@Test
+	public void testInitialization() throws Exception {		
+		migrator.applyUpdates();
+		Statement stmt = con.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'migration_meta_data'");
+			assertTrue(rs.next());
+		} finally { stmt.close(); }
+	}
+	
 	@After
 	public void cleanUp() {
 		for (File file : testMigrationDirectory.listFiles()) {
