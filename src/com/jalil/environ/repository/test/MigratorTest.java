@@ -27,6 +27,10 @@ public class MigratorTest {
 	private static Connection con = null;
 	private Migrator migrator = null;
 	
+	private String update1 = "CREATE TABLE temp(name TEXT)";
+	
+	private String update1Title = "2014-10-17 22-46-00_create_temp.sql";
+	
 	@BeforeClass
 	public static void start() {
 		con = FakeSQLiteJDBC.getConnection();
@@ -44,6 +48,17 @@ public class MigratorTest {
 		Statement stmt = con.createStatement();
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'migration_meta_data'");
+			assertTrue(rs.next());
+		} finally { stmt.close(); }
+	}
+	
+	@Test
+	public void testFirstMigration() throws Exception {	
+		Files.asCharSink(new File(testMigrationDirectory + "/" + update1Title), Charsets.UTF_8).writeFrom(new StringReader(update1));
+		migrator.applyUpdates();
+		Statement stmt = con.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'temp'");
 			assertTrue(rs.next());
 		} finally { stmt.close(); }
 	}
