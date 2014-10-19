@@ -28,8 +28,10 @@ public class MigratorTest {
 	private Migrator migrator = null;
 	
 	private String update1 = "CREATE TABLE temp(name TEXT)";
+	private String update2 = "CREATE TABLE tmp(id INTEGER); DROP TABLE temp;";
 	
 	private String update1Title = "2014-10-17 22-46-00_create_temp.sql";
+	private String update2Title = "2014-10-17 22-47-00_create_tmp_drop_temp.sql";
 	
 	@BeforeClass
 	public static void start() {
@@ -60,6 +62,20 @@ public class MigratorTest {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'temp'");
 			assertTrue(rs.next());
+		} finally { stmt.close(); }
+	}
+	
+	@Test
+	public void testNewMigration() throws Exception {	
+		Files.asCharSink(new File(testMigrationDirectory + "/" + update1Title), Charsets.UTF_8).writeFrom(new StringReader(update1));
+		Files.asCharSink(new File(testMigrationDirectory + "/" + update2Title), Charsets.UTF_8).writeFrom(new StringReader(update2));
+		migrator.applyUpdates();
+		Statement stmt = con.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'tmp'");
+			assertTrue(rs.next());
+			rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'temp'");
+			assertTrue(!rs.next());
 		} finally { stmt.close(); }
 	}
 	
