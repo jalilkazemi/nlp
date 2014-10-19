@@ -24,9 +24,11 @@ public class Migrator {
 	
 	private String migrationPrefixFormat = "yyyy-MM-dd hh-mm-ss";
 	private DateFormat sdf = new SimpleDateFormat(migrationPrefixFormat);
+	private static String DEFAULT_DELIMITER = ";";
 	private static String CREATE_META_DATA = "CREATE TABLE IF NOT EXISTS migration_meta_data( " + 
 	 										 " id INTEGER PRIMARY KEY NOT NULL, " + 
 	 										 " migration_datetime DATETIME NOT NULL)";
+	private static String INSERT_META_DATA = "INSERT INTO migration_meta_data(migration_datetime) VALUES(?)";
 	private static String SELECT_META_DATA = "SELECT MAX(migration_datetime) FROM migration_meta_data";
 
 	public Migrator(File migrationDirectory, Connection con) {
@@ -36,9 +38,26 @@ public class Migrator {
 	
 	public void applyUpdates() throws Exception {
 		initializeMigrationMetaData();
-		Map<Date, String> updates = findUpdates();
+		final Map<Date, String> updates = findUpdates();
 		if (updates.size() == 0) 
 			return;
+		new SafeBatch(con) {
+
+			@Override
+            public void run() throws SQLException {
+				Statement stmt = con.createStatement();
+				try {
+					PreparedStatement preparedStmt = con.prepareStatement(INSERT_META_DATA);
+					try {
+						for (Map.Entry<Date, String> updateEntry : updates.entrySet()) {
+							applyUpdate(stmt, preparedStmt, updateEntry.getKey(), updateEntry.getValue());				
+						}				
+						stmt.executeBatch();
+						preparedStmt.executeBatch();
+						con.commit();
+					} finally { preparedStmt.close(); }
+				} finally { stmt.close(); }	            
+            }}.execute();
 	}
 	
 	private Map<Date, String> findUpdates() throws Exception {
@@ -63,6 +82,9 @@ public class Migrator {
 			}
 		}
 		return dateMigrationMap;
+	}
+	
+	private void applyUpdate(Statement stmt, PreparedStatement metaStmt, Date updateDate, String updateContent) throws SQLException {
 	}
 	
 	private void initializeMigrationMetaData() throws Exception {
