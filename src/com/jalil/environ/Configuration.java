@@ -12,4 +12,12 @@ public class Configuration {
 	private Configuration() {}
 	
 	public static final String databaseName = "src/resources/main.db";
+	public static final File migrationDirectory = new File("src/resources/migration");
+	
+	static {
+		if (!migrationDirectory.exists()) {
+			new FileNotFoundException("Migration directory is not found.").printStackTrace();
+			System.exit(1);
+		}
+	}
 }

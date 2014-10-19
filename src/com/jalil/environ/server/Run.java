@@ -9,5 +9,12 @@ import com.jalil.environ.repository.SQLiteJDBC;
 public class Run {
 	
 	public static void main(String[] args) {
+		Connection con = SQLiteJDBC.getConnection();
+		Migrator migrator = new Migrator(migrationDirectory, con);
+		try {
+			migrator.applyUpdates();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
