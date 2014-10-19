@@ -12,6 +12,7 @@ public class Configuration {
 	private Configuration() {}
 	
 	public static final String databaseName = "src/resources/main.db";
+	public static final String testDatabaseName = "src/resources/test.db";
 	public static final File migrationDirectory = new File("src/resources/migration");
 	
 	static {
