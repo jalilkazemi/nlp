@@ -11,10 +11,10 @@ import java.util.Set;
 public class Configuration {
 	private Configuration() {}
 	
-	public static final String databaseName = "src/resources/main.db";
-	public static final String testDatabaseName = "src/resources/test.db";
-	public static final File migrationDirectory = new File("src/resources/migration");
-	public static final File testMigrationDirectory = new File("src/resources/test_migration");
+	public static final String databaseName = "resources/main.db";
+	public static final String testDatabaseName = "resources/test.db";
+	public static final File migrationDirectory = new File("migrations");
+	public static final File testMigrationDirectory = new File("test_migrations");
 	
 	static {
 		if (!migrationDirectory.exists()) {
