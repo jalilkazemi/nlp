@@ -15,6 +15,8 @@ public class RssFeedDao {
 	
 	private static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
 										   "VALUES(?, ?, ?, ?)";
+	private static String INSERT_ITEM = "INSERT OR IGNORE INTO items(channel_pk, title, link, description) " +
+										"SELECT id, ?, ?, ? FROM channels WHERE link = ?";
 
 	public void storeRssFeed(final Connection con, final RssFeed rssFeed) throws SQLException {
 		new SafeBatch(con) {
@@ -48,5 +50,20 @@ public class RssFeedDao {
 	}
 	
 	private void storeItems(Connection con, URL channelLink, Iterator<Item> items) throws SQLException {
+		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
+		while (items.hasNext()) {
+			Item item = items.next();
+			stmt.setString(1, item.getTitle());
+			stmt.setString(2, item.getLink().getPath());
+			String description = item.getDescription();
+			if (description == null) {
+				stmt.setNull(3, Types.VARCHAR);
+			} else {
+				stmt.setString(3, description);			
+			}
+			stmt.setString(4, channelLink.getPath());
+			stmt.addBatch();
+		}
+		stmt.executeBatch();
 	}
 }
