@@ -13,6 +13,9 @@ import com.jalil.environ.rss.RssFeed;
 
 public class RssFeedDao {
 	
+	private static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
+										   "VALUES(?, ?, ?, ?)";
+
 	public void storeRssFeed(final Connection con, final RssFeed rssFeed) throws SQLException {
 		new SafeBatch(con) {
 
@@ -25,6 +28,23 @@ public class RssFeedDao {
 	}
 	
 	private void storeChannel(Connection con, Channel channel) throws SQLException {
+		PreparedStatement stmt = con.prepareStatement(INSERT_CHANNEL);
+		stmt.setString(1, channel.getTitle());
+		stmt.setString(2, channel.getLink().getPath());
+		String description = channel.getDescription();
+		if (description == null) {
+			stmt.setNull(3, Types.VARCHAR);
+		} else {
+			stmt.setString(3, description);			
+		}
+		String language = channel.getLanguage();
+		if (language == null) {
+			stmt.setNull(4, Types.CHAR);
+		} else {
+			stmt.setString(4, channel.getLanguage());
+		}
+		
+		stmt.executeUpdate();
 	}
 	
 	private void storeItems(Connection con, URL channelLink, Iterator<Item> items) throws SQLException {
