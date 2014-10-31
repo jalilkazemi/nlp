@@ -54,10 +54,9 @@ public class Migrator {
 						}				
 						stmt.executeBatch();
 						preparedStmt.executeBatch();
-						con.commit();
 					} finally { preparedStmt.close(); }
 				} finally { stmt.close(); }	            
-            }}.execute();
+            }}.commit();
 	}
 	
 	private Map<Date, String> findUpdates() throws Exception {

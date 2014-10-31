@@ -13,11 +13,12 @@ public abstract class SafeBatch {
 	
 	public abstract void run() throws SQLException;
 	
-	public void execute() throws SQLException {
+	public void commit() throws SQLException {
 		boolean originalAutoCommit = con.getAutoCommit();
 		try {
 			con.setAutoCommit(false);
 			run();
+			con.commit();
 		} catch (SQLException e) {
 			con.rollback();
 			throw e;

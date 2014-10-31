@@ -25,8 +25,7 @@ public class RssFeedDao {
             public void run() throws SQLException {
 				storeChannel(con, rssFeed.getChannel());
 				storeItems(con, rssFeed.getChannel().getLink(), rssFeed.getItems());
-				con.commit();	            
-            }}.execute();
+            }}.commit();
 	}
 	
 	private void storeChannel(Connection con, Channel channel) throws SQLException {
