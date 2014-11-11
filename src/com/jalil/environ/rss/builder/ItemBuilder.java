@@ -7,7 +7,7 @@ import com.jalil.environ.rss.Item;
 public class ItemBuilder {
 
 	private String title;
-	private URL link;
+	private String link;
 	private String description;
 
 	public ItemBuilder() {
@@ -18,7 +18,7 @@ public class ItemBuilder {
 		return this;
 	}
 	
-	public ItemBuilder link(URL link) {
+	public ItemBuilder link(String link) {
 		this.link = link;
 		return this;
 	}

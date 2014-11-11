@@ -5,12 +5,12 @@ import java.net.URL;
 public class Item {
 	
 	private String title;
-	private URL link;
+	private String link;
 	private String description;
-
+	
 	private Item() {}
-
-	public Item(String title, URL link, String description) {
+	
+	public Item(String title, String link, String description) {
 		this.title = title;
 		this.link = link;
 		this.description = description;
@@ -20,7 +20,7 @@ public class Item {
 	    return title;
     }
 
-	public URL getLink() {
+	public String getLink() {
 	    return link;
     }
 

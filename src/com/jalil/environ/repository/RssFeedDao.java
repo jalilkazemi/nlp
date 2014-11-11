@@ -1,6 +1,5 @@
 package com.jalil.environ.repository;
 
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,7 +30,7 @@ public class RssFeedDao {
 	private void storeChannel(Connection con, Channel channel) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_CHANNEL);
 		stmt.setString(1, channel.getTitle());
-		stmt.setString(2, channel.getLink().getPath());
+		stmt.setString(2, channel.getLink());
 		String description = channel.getDescription();
 		if (description == null) {
 			stmt.setNull(3, Types.VARCHAR);
@@ -53,7 +52,7 @@ public class RssFeedDao {
 		while (items.hasNext()) {
 			Item item = items.next();
 			stmt.setString(1, item.getTitle());
-			stmt.setString(2, item.getLink().getPath());
+			stmt.setString(2, item.getLink());
 			String description = item.getDescription();
 			if (description == null) {
 				stmt.setNull(3, Types.VARCHAR);
