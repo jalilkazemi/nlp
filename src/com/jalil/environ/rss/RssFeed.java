@@ -2,7 +2,9 @@ package com.jalil.environ.rss;
 
 public class RssFeed {
 	
-	private final Channel channel;
+	private Channel channel;
+	
+	public RssFeed() {}
 	
 	public RssFeed(Channel channel) {
 		this.channel = channel;
