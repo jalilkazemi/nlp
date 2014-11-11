@@ -6,12 +6,14 @@ import java.util.Set;
 
 public class Channel {
 	
-	private final String title;
-	private final String link;
-	private final String description;
-	private final String language;
-	private final Set<Item> items;
+	private String title;
+	private String link;
+	private String description;
+	private String language;
+	private Set<Item> items;
 	
+	private Channel() {}
+
 	public Channel(String title, String link, String description, String language, Item... items) {
 		this.title = title;
 		this.link = link;
@@ -20,7 +22,7 @@ public class Channel {
 		this.items = new HashSet<Item>();
 		if (items != null) {
 			for (Item item : items)
-				this.items.add(item);
+				this.items.add(item);			
 		}
 	}
 
