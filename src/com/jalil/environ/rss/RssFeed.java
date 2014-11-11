@@ -34,4 +34,9 @@ public class RssFeed {
 		int result = channel.hashCode();
 		return result;
 	}
+
+	@Override
+    public String toString() {
+	    return "RssFeed [channel=" + channel + "]";
+    }
 }
