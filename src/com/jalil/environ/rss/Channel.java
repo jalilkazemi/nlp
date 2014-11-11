@@ -4,14 +4,28 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+
+@XmlRootElement(namespace = "com.jalil.environ.rss.RssFeed")
 public class Channel {
 	
+	@XmlElement(name = "title")
 	private String title;
+
+	@XmlElement(name = "link")
 	private String link;
+
+	@XmlElement(name = "description")
 	private String description;
+
+	@XmlElement(name = "language")
 	private String language;
-	private Set<Item> items;
 	
+	@XmlElement(name = "item")
+	private Set<Item> items;
+
 	private Channel() {}
 
 	public Channel(String title, String link, String description, String language, Item... items) {
@@ -22,7 +36,7 @@ public class Channel {
 		this.items = new HashSet<Item>();
 		if (items != null) {
 			for (Item item : items)
-				this.items.add(item);			
+				this.items.add(item);
 		}
 	}
 
@@ -45,7 +59,7 @@ public class Channel {
 	public Iterator<Item> getItems() {
 		return items.iterator();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -68,7 +82,7 @@ public class Channel {
 		
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int result = title.hashCode();
@@ -78,7 +92,7 @@ public class Channel {
 		result = 31 * result + items.hashCode();
 		return result;
 	}
-	
+
 	@Override
     public String toString() {
 	    return "Channel [title=" + title + ", link=" + link + ", description="
