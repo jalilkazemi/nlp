@@ -1,6 +1,5 @@
 package com.jalil.environ.rss;
 
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -8,12 +7,12 @@ import java.util.Set;
 public class Channel {
 	
 	private final String title;
-	private final URL link;
+	private final String link;
 	private final String description;
 	private final String language;
 	private final Set<Item> items;
 	
-	public Channel(String title, URL link, String description, String language, Item... items) {
+	public Channel(String title, String link, String description, String language, Item... items) {
 		this.title = title;
 		this.link = link;
 		this.description = description;
@@ -29,7 +28,7 @@ public class Channel {
 	    return title;
     }
 
-	public URL getLink() {
+	public String getLink() {
 	    return link;
     }
 

@@ -8,7 +8,7 @@ import com.jalil.environ.rss.Item;
 public class ChannelBuilder {
 
 	private String title;
-	private URL link;
+	private String link;
 	private String description;
 	private String language;
 	private Item[] items;
@@ -21,7 +21,7 @@ public class ChannelBuilder {
 		return this;
 	}
 	
-	public ChannelBuilder link(URL link) {
+	public ChannelBuilder link(String link) {
 		this.link = link;
 		return this;
 	}

@@ -48,7 +48,7 @@ public class RssFeedDao {
 		stmt.executeUpdate();
 	}
 	
-	private void storeItems(Connection con, URL channelLink, Iterator<Item> items) throws SQLException {
+	private void storeItems(Connection con, String channelLink, Iterator<Item> items) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
 		while (items.hasNext()) {
 			Item item = items.next();
@@ -60,7 +60,7 @@ public class RssFeedDao {
 			} else {
 				stmt.setString(3, description);			
 			}
-			stmt.setString(4, channelLink.getPath());
+			stmt.setString(4, channelLink);
 			stmt.addBatch();
 		}
 		stmt.executeBatch();
