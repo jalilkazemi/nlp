@@ -24,7 +24,7 @@ public class RssFeedDao {
 			@Override
             public void run() throws SQLException {
 				storeChannel(con, rssFeed.getChannel());
-				storeItems(con, rssFeed.getChannel().getLink(), rssFeed.getItems());
+				storeItems(con, rssFeed.getChannel().getLink(), rssFeed.getChannel().getItems());
             }}.commit();
 	}
 	

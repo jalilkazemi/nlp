@@ -1,7 +1,9 @@
 package com.jalil.environ.rss;
 
 import java.net.URL;
-
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Channel {
 	
@@ -9,12 +11,18 @@ public class Channel {
 	private final URL link;
 	private final String description;
 	private final String language;
+	private final Set<Item> items;
 	
-	public Channel(String title, URL link, String description, String language) {
+	public Channel(String title, URL link, String description, String language, Item... items) {
 		this.title = title;
 		this.link = link;
 		this.description = description;
 		this.language = language;
+		this.items = new HashSet<Item>();
+		if (items != null) {
+			for (Item item : items)
+				this.items.add(item);
+		}
 	}
 
 	public String getTitle() {
@@ -33,6 +41,10 @@ public class Channel {
 	    return language;
     }
 	
+	public Iterator<Item> getItems() {
+		return items.iterator();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -50,16 +62,19 @@ public class Channel {
 			return false;
 		if(language != null ? !language.equals(that.language) : that.language != null)
 			return false;
+		if (!items.equals(that.items))
+			return false;
 		
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int result = title.hashCode();
 		result = 31 * result + link.hashCode();
 		result = 31 * result + (description != null ? description.hashCode() : 0);
 		result = 31 * result + (language != null ? language.hashCode() : 0);
+		result = 31 * result + items.hashCode();
 		return result;
 	}
 }

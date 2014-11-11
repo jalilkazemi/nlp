@@ -3,6 +3,7 @@ package com.jalil.environ.rss.builder;
 import java.net.URL;
 
 import com.jalil.environ.rss.Channel;
+import com.jalil.environ.rss.Item;
 
 public class ChannelBuilder {
 
@@ -10,6 +11,7 @@ public class ChannelBuilder {
 	private URL link;
 	private String description;
 	private String language;
+	private Item[] items;
 
 	public ChannelBuilder() {
 	}
@@ -33,8 +35,13 @@ public class ChannelBuilder {
 		this.language = language;
 		return this;
 	}
-	
+
+	public ChannelBuilder items(Item... items) {
+		this.items = items;
+		return this;
+	}
+
 	public Channel build() {
-		return new Channel(title, link, description, language);
+		return new Channel(title, link, description, language, items);
 	}
 }
