@@ -44,7 +44,7 @@ public class Channel {
 	public Iterator<Item> getItems() {
 		return items.iterator();
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -67,7 +67,7 @@ public class Channel {
 		
 		return true;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = title.hashCode();
@@ -77,4 +77,10 @@ public class Channel {
 		result = 31 * result + items.hashCode();
 		return result;
 	}
+	
+	@Override
+    public String toString() {
+	    return "Channel [title=" + title + ", link=" + link + ", description="
+	            + description + ", language=" + language + ", items=" + items.toString() + "]";
+    }
 }
