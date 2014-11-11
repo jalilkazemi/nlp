@@ -1,11 +1,18 @@
 package com.jalil.environ.rss;
 
-import java.net.URL;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(namespace = "com.jalil.environ.rss.RssFeed")
 public class Item {
 	
+	@XmlElement(name = "title")
 	private String title;
+	
+	@XmlElement(name = "link")
 	private String link;
+
+	@XmlElement(name = "description")
 	private String description;
 	
 	private Item() {}
