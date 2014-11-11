@@ -53,4 +53,9 @@ public class Item {
 		return result;
 	}
 
+	@Override
+    public String toString() {
+	    return "Item [title=" + title + ", link=" + link + ", description="
+	            + description + "]";
+    }
 }
