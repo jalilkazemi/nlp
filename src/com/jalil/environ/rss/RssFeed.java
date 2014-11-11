@@ -1,7 +1,12 @@
 package com.jalil.environ.rss;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "rss")
 public class RssFeed {
 	
+	@XmlElement(name = "channel")
 	private Channel channel;
 	
 	public RssFeed() {}
