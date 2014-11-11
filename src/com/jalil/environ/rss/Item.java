@@ -4,10 +4,12 @@ import java.net.URL;
 
 public class Item {
 	
-	private final String title;
-	private final URL link;
-	private final String description;
-	
+	private String title;
+	private URL link;
+	private String description;
+
+	private Item() {}
+
 	public Item(String title, URL link, String description) {
 		this.title = title;
 		this.link = link;
