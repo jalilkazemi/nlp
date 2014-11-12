@@ -15,6 +15,8 @@ public class Body {
 	@XmlElement(name = "div")
 	private Set<Division> divisions;
 	
+	private Body() {}
+	
 	public Body(Division... divisions) {
 		this.divisions = new HashSet<Division>();
 		if (divisions != null) {
