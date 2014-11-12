@@ -23,7 +23,7 @@ public class NewsFetcher {
 	private Set<String> valuesOfAttributeClassInTagDivForBody; 
 	private Set<String> valuesOfAttributeClassInTagDivForMeta; 
 
-	public NewsFetcher(String addr) throws JAXBException {
+	public NewsFetcher() throws JAXBException {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Body.class);
 		jaxbUnmarshaller = jaxbContext.createUnmarshaller();		
 		
