@@ -16,6 +16,7 @@ import com.jalil.environ.rss.RssFeed;
 
 public class RssFeedDao {
 	
+	private static String INSERT_RSS = "INSERT OR IGNORE INTO rss_pages(link) values(?)";
 	private static String SELECT_RSS = "SELECT link FROM rss_pages";
 	private static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
 										   "VALUES(?, ?, ?, ?)";
@@ -30,6 +31,12 @@ public class RssFeedDao {
 			rssPages.add(rs.getString("link"));
 		}
 		return rssPages;
+	}
+	
+	public void addRssPage(Connection con, String rssLink) throws SQLException {
+		PreparedStatement stmt = con.prepareStatement(INSERT_RSS);
+		stmt.setString(1, rssLink);
+		stmt.executeUpdate();
 	}
 	
 	public void storeRssFeed(final Connection con, final RssFeed rssFeed) throws SQLException {
