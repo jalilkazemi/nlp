@@ -30,8 +30,8 @@ public class MigratorTest {
 	private String update1 = "CREATE TABLE temp(name TEXT)";
 	private String update2 = "CREATE TABLE tmp(id INTEGER); DROP TABLE temp;";
 	
-	private String update1Title = "2014-10-17 22-46-00_create_temp.sql";
-	private String update2Title = "2014-10-17 22-47-00_create_tmp_drop_temp.sql";
+	private String update1Title = "2014-10-17-22-46-00_create_temp.sql";
+	private String update2Title = "2014-10-17-22-47-00_create_tmp_drop_temp.sql";
 	
 	@BeforeClass
 	public static void start() {

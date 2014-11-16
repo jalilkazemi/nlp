@@ -22,7 +22,7 @@ public class Migrator {
 	private final File migrationDirectory;
 	private final Connection con;
 	
-	private String migrationPrefixFormat = "yyyy-MM-dd hh-mm-ss";
+	private String migrationPrefixFormat = "yyyy-MM-dd-hh-mm-ss";
 	private DateFormat sdf = new SimpleDateFormat(migrationPrefixFormat);
 	private static String DEFAULT_DELIMITER = ";";
 	private static String CREATE_META_DATA = "CREATE TABLE IF NOT EXISTS migration_meta_data( " + 
@@ -68,7 +68,7 @@ public class Migrator {
 			rs.next();
 			lastMigrationDate = rs.getDate(1);
 			if (lastMigrationDate == null) {
-				lastMigrationDate = new Date(sdf.parse("1970-01-01 00-00-00").getTime());				
+				lastMigrationDate = new Date(sdf.parse("1970-01-01-00-00-00").getTime());				
 			}
 		} finally { stmt.close(); }
 		File[] migrations = migrationDirectory.listFiles();
