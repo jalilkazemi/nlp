@@ -75,10 +75,9 @@ public class RssFeedDao {
 		stmt.executeUpdate();
 	}
 	
-	private void storeItems(String channelLink, Iterator<Item> items) throws SQLException {
+	private void storeItems(String channelLink, Set<Item> items) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
-		while (items.hasNext()) {
-			Item item = items.next();
+		for (Item item : items) {
 			stmt.setString(1, item.getTitle());
 			stmt.setString(2, item.getLink());
 			String description = item.getDescription();

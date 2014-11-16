@@ -1,5 +1,6 @@
 package com.jalil.environ.rss;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,16 +29,12 @@ public class Channel {
 
 	private Channel() {}
 
-	public Channel(String title, String link, String description, String language, Item... items) {
+	public Channel(String title, String link, String description, String language, Set<Item> items) {
 		this.title = title;
 		this.link = link;
 		this.description = description;
 		this.language = language;
-		this.items = new HashSet<Item>();
-		if (items != null) {
-			for (Item item : items)
-				this.items.add(item);
-		}
+		this.items = Collections.unmodifiableSet(new HashSet<Item>(items));
 	}
 
 	public String getTitle() {
@@ -56,8 +53,8 @@ public class Channel {
 	    return language;
     }
 	
-	public Iterator<Item> getItems() {
-		return items.iterator();
+	public Set<Item> getItems() {
+		return items;
 	}
 
 	@Override
