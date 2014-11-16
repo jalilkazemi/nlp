@@ -2,8 +2,7 @@ package com.jalil.environ.fetch;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -15,7 +14,6 @@ import com.jalil.environ.html.Body;
 import com.jalil.environ.html.Division;
 import com.jalil.environ.html.Post;
 import com.jalil.environ.html.PostBuilder;
-import com.jalil.environ.rss.RssFeed;
 
 public class PostFetcher {
 
@@ -51,6 +49,6 @@ public class PostFetcher {
 				hasMeta = true;
 			}
 		}
-		return builder.build();
+		return builder.fetchedTime(new Date()).build();
 	}
 }
