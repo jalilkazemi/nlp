@@ -1,6 +1,6 @@
 package com.jalil.environ.html;
 
-import java.sql.Date;
+import java.util.Date;
 
 
 public class PostBuilder {

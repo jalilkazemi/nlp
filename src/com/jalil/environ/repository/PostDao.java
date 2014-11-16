@@ -1,6 +1,7 @@
 package com.jalil.environ.repository;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class PostDao {
 		PreparedStatement stmt = con.prepareStatement(INSERT_POST);
 		stmt.setString(1, post.getBody());
 		stmt.setString(2, post.getMeta());
-		stmt.setDate(3, post.getFetchedTime());
+		stmt.setDate(3, new Date(post.getFetchedTime().getTime()));
 		stmt.setString(4, item.getLink());
 		stmt.executeUpdate();
 	}
