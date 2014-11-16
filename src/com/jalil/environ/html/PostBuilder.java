@@ -1,10 +1,13 @@
 package com.jalil.environ.html;
 
+import java.sql.Date;
+
 
 public class PostBuilder {
 
 	private String meta;
 	private String body;
+	private Date fetchedTime;
 
 	public PostBuilder() {}
 	
@@ -18,7 +21,12 @@ public class PostBuilder {
 		return this;
 	}
 	
+	public PostBuilder fetchedTime(Date fetchedTime) {
+		this.fetchedTime = fetchedTime;
+		return this;
+	}
+	
 	public Post build() {
-		return new Post(meta, body);
+		return new Post(meta, body, fetchedTime);
 	}
 }
