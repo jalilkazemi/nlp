@@ -16,9 +16,9 @@ import com.jalil.environ.rss.RssFeed;
 
 public class RssFeedDao {
 	
-	private static String INSERT_RSS = "INSERT OR IGNORE INTO rss_pages(link) values(?)";
-	private static String SELECT_RSS = "SELECT link FROM rss_pages";
-	private static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
+	private final static String INSERT_RSS = "INSERT OR IGNORE INTO rss_pages(link) values(?)";
+	private final static String SELECT_RSS = "SELECT link FROM rss_pages";
+	private final static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
 										   "VALUES(?, ?, ?, ?)";
 	private static String INSERT_ITEM = "INSERT OR IGNORE INTO items(channel_pk, title, link, description) " +
 										"SELECT id, ?, ?, ? FROM channels WHERE link = ?";
