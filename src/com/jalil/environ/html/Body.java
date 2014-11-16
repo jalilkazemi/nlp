@@ -1,5 +1,6 @@
 package com.jalil.environ.html;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -17,16 +18,12 @@ public class Body {
 	
 	private Body() {}
 	
-	public Body(Division... divisions) {
-		this.divisions = new HashSet<Division>();
-		if (divisions != null) {
-			for (Division division : divisions)
-				this.divisions.add(division);
-		}
+	public Body(Set<Division> divisions) {
+		this.divisions = Collections.unmodifiableSet(new HashSet<Division>(divisions));
 	}
 	
-	public Iterator<Division> getDivisions() {
-		return divisions.iterator();
+	public Set<Division> getDivisions() {
+		return divisions;
 	}
 
 	@Override

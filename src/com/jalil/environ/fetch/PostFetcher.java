@@ -40,9 +40,9 @@ public class PostFetcher {
 		Body body = (Body) jaxbUnmarshaller.unmarshal(url);
 		PostBuilder builder = new PostBuilder();
 		boolean hasMeta = false, hasBody = false;
-		Iterator<Division> iter = body.getDivisions();
-		while (!(hasMeta && hasBody) && iter.hasNext()) {
-			Division div = iter.next();
+		for (Division div : body.getDivisions()) {
+			if (hasMeta && hasBody)
+				break;
 			if (valuesOfAttributeClassInTagDivForBody.contains(div.getClassAttr())) {
 				builder.body(div.getContent());
 				hasBody = true;
