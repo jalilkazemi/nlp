@@ -1,7 +1,6 @@
 package com.jalil.environ.fetch;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
 
@@ -20,8 +19,15 @@ public class PostFetcher {
 	private Unmarshaller jaxbUnmarshaller;
 	private Set<String> valuesOfAttributeClassInTagDivForBody; 
 	private Set<String> valuesOfAttributeClassInTagDivForMeta; 
-
+	private final AddrToReader addrToReader;
+	
 	public PostFetcher() throws JAXBException {
+		this(new AddrToReaderImpl());
+	}
+
+	public PostFetcher(AddrToReader addrToReader) throws JAXBException {
+		this.addrToReader = addrToReader;
+
 		JAXBContext jaxbContext = JAXBContext.newInstance(Body.class);
 		jaxbUnmarshaller = jaxbContext.createUnmarshaller();		
 		
@@ -33,9 +39,8 @@ public class PostFetcher {
 		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate");
 	}
 	
-	public Post fetch(String addr) throws MalformedURLException, JAXBException {
-		URL url = new URL(addr);
-		Body body = (Body) jaxbUnmarshaller.unmarshal(url);
+	public Post fetch(String addr) throws JAXBException, IOException {
+		Body body = (Body) jaxbUnmarshaller.unmarshal(addrToReader.reader(addr));
 		PostBuilder builder = new PostBuilder();
 		boolean hasMeta = false, hasBody = false;
 		for (Division div : body.getDivisions()) {
