@@ -1,8 +1,8 @@
 package com.jalil.environ.html;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(namespace = "com.jalil.environ.html.Body")
 public class Division {
@@ -10,7 +10,7 @@ public class Division {
 	@XmlAttribute(name = "class")
 	private String classAttr;
 	
-	@XmlElement
+	@XmlValue
 	private String content;
 	
 	public Division() {}
