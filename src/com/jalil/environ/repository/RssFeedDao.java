@@ -2,9 +2,13 @@ package com.jalil.environ.repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.jalil.environ.rss.Channel;
 import com.jalil.environ.rss.Item;
@@ -12,11 +16,22 @@ import com.jalil.environ.rss.RssFeed;
 
 public class RssFeedDao {
 	
+	private static String SELECT_RSS = "SELECT link FROM rss_pages";
 	private static String INSERT_CHANNEL = "INSERT OR IGNORE INTO channels(title, link, description, language) " +
 										   "VALUES(?, ?, ?, ?)";
 	private static String INSERT_ITEM = "INSERT OR IGNORE INTO items(channel_pk, title, link, description) " +
 										"SELECT id, ?, ?, ? FROM channels WHERE link = ?";
 
+	public Set<String> restoreRssPages(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(SELECT_RSS);
+		Set<String> rssPages = new HashSet<String>();
+		while (rs.next()) {
+			rssPages.add(rs.getString("link"));
+		}
+		return rssPages;
+	}
+	
 	public void storeRssFeed(final Connection con, final RssFeed rssFeed) throws SQLException {
 		new SafeBatch(con) {
 
