@@ -13,17 +13,17 @@ import javax.xml.bind.Unmarshaller;
 import com.google.common.collect.Sets;
 import com.jalil.environ.html.Body;
 import com.jalil.environ.html.Division;
-import com.jalil.environ.html.News;
-import com.jalil.environ.html.NewsBuilder;
+import com.jalil.environ.html.Post;
+import com.jalil.environ.html.PostBuilder;
 import com.jalil.environ.rss.RssFeed;
 
-public class NewsFetcher {
+public class PostFetcher {
 
 	private Unmarshaller jaxbUnmarshaller;
 	private Set<String> valuesOfAttributeClassInTagDivForBody; 
 	private Set<String> valuesOfAttributeClassInTagDivForMeta; 
 
-	public NewsFetcher() throws JAXBException {
+	public PostFetcher() throws JAXBException {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Body.class);
 		jaxbUnmarshaller = jaxbContext.createUnmarshaller();		
 		
@@ -35,10 +35,10 @@ public class NewsFetcher {
 		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate");
 	}
 	
-	public News fetch(String addr) throws MalformedURLException, JAXBException {
+	public Post fetch(String addr) throws MalformedURLException, JAXBException {
 		URL url = new URL(addr);
 		Body body = (Body) jaxbUnmarshaller.unmarshal(url);
-		NewsBuilder builder = new NewsBuilder();
+		PostBuilder builder = new PostBuilder();
 		boolean hasMeta = false, hasBody = false;
 		Iterator<Division> iter = body.getDivisions();
 		while (!(hasMeta && hasBody) && iter.hasNext()) {
