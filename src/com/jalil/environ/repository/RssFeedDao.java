@@ -23,7 +23,13 @@ public class RssFeedDao {
 	private static String INSERT_ITEM = "INSERT OR IGNORE INTO items(channel_pk, title, link, description) " +
 										"SELECT id, ?, ?, ? FROM channels WHERE link = ?";
 
-	public Set<String> restoreRssPages(Connection con) throws SQLException {
+	private final Connection con;
+	
+	public RssFeedDao(Connection con) {
+		this.con = con;
+	}
+	
+	public Set<String> restoreRssPages() throws SQLException {
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(SELECT_RSS);
 		Set<String> rssPages = new HashSet<String>();
@@ -33,23 +39,23 @@ public class RssFeedDao {
 		return rssPages;
 	}
 	
-	public void addRssPage(Connection con, String rssLink) throws SQLException {
+	public void addRssPage(String rssLink) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_RSS);
 		stmt.setString(1, rssLink);
 		stmt.executeUpdate();
 	}
 	
-	public void storeRssFeed(final Connection con, final RssFeed rssFeed) throws SQLException {
+	public void storeRssFeed(final RssFeed rssFeed) throws SQLException {
 		new SafeBatch(con) {
 
 			@Override
             public void run() throws SQLException {
-				storeChannel(con, rssFeed.getChannel());
-				storeItems(con, rssFeed.getChannel().getLink(), rssFeed.getChannel().getItems());
+				storeChannel(rssFeed.getChannel());
+				storeItems(rssFeed.getChannel().getLink(), rssFeed.getChannel().getItems());
             }}.commit();
 	}
 	
-	private void storeChannel(Connection con, Channel channel) throws SQLException {
+	private void storeChannel(Channel channel) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_CHANNEL);
 		stmt.setString(1, channel.getTitle());
 		stmt.setString(2, channel.getLink());
@@ -69,7 +75,7 @@ public class RssFeedDao {
 		stmt.executeUpdate();
 	}
 	
-	private void storeItems(Connection con, String channelLink, Iterator<Item> items) throws SQLException {
+	private void storeItems(String channelLink, Iterator<Item> items) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
 		while (items.hasNext()) {
 			Item item = items.next();

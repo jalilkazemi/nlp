@@ -17,7 +17,13 @@ public class PostDao {
 										"SELECT id, ?, ?, ? FROM items WHERE link = ?";
 	private final static String SELECT_POST = "SELECT body, meta, fetched_datetime FROM posts JOIN items ON item_pk = items.id WHERE link = ?";
 	
-	public void storePost(Connection con, Item item, Post post) throws SQLException {
+	private final Connection con;
+	
+	public PostDao(Connection con) {
+		this.con = con;
+	}
+	
+	public void storePost(Item item, Post post) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_POST);
 		stmt.setString(1, post.getBody());
 		stmt.setString(2, post.getMeta());
@@ -26,7 +32,7 @@ public class PostDao {
 		stmt.executeUpdate();
 	}
 
-	public Set<Post> restorePost(Connection con, Item item) throws SQLException {
+	public Set<Post> restorePost(Item item) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(SELECT_POST);
 		stmt.setString(1, item.getLink());
 		ResultSet rs = stmt.executeQuery();
