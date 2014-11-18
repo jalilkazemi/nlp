@@ -10,21 +10,21 @@ import com.jalil.environ.rss.RssFeed;
 
 public class RssFetcher {
 	
-	private final AddrToReader addrToReader;
+	private final UriStreamer uriStreamer;
 	private Unmarshaller jaxbUnmarshaller;
 	
 	public RssFetcher() throws JAXBException {
-		this(new AddrToReaderImpl());
+		this(new UriStreamerImpl());
 	}
 	
-	public RssFetcher(AddrToReader addrToReader) throws JAXBException {
-		this.addrToReader = addrToReader;
+	public RssFetcher(UriStreamer uriStreamer) throws JAXBException {
+		this.uriStreamer = uriStreamer;
 
 		JAXBContext jaxbContext = JAXBContext.newInstance(RssFeed.class);
 		jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 	}
 	
 	public RssFeed fetch(String addr) throws IOException, JAXBException {
-		return (RssFeed) jaxbUnmarshaller.unmarshal(addrToReader.reader(addr));
+		return (RssFeed) jaxbUnmarshaller.unmarshal(uriStreamer.stream(addr));
 	}
 }

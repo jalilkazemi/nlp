@@ -1,11 +1,11 @@
 package com.jalil.environ.fetch.test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -15,13 +15,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.jalil.environ.fetch.AddrToReader;
+import com.jalil.environ.fetch.UriStreamer;
 import com.jalil.environ.fetch.RssFetcher;
 import com.jalil.environ.rss.Channel;
 import com.jalil.environ.rss.Item;
 import com.jalil.environ.rss.RssFeed;
+
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
@@ -42,11 +42,11 @@ public class RssFetcherTest {
 
 	@Test
 	public void testXmlParser() throws IOException, JAXBException {
-		RssFetcher fetcher = new RssFetcher(new AddrToReader() {
+		RssFetcher fetcher = new RssFetcher(new UriStreamer() {
 
 			@Override
-            public Reader reader(String addr) throws MalformedURLException, IOException {
-	            return new StringReader(rssStr);
+            public InputStream stream(String addr) throws MalformedURLException, IOException {
+	            return new ByteArrayInputStream(rssStr.getBytes(StandardCharsets.UTF_8));
             }
 			
 		});
