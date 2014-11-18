@@ -22,13 +22,14 @@ import com.jalil.environ.html.Post;
 public class PostFetcherTest {
 	
 	private static String postStr = "<html><head></head><body><div class=\"entry-meta\">meta</div><div class=\"entry-content\">body</div></body></html>";
+	private static String postStrWithEntity = "<html><head><link title=\"a&raquo;b\"/></head><body></body></html>";
 	
 	@BeforeClass
 	public static void init() throws IOException {
 	}
 
 	@Test
-	public void testXmlParser() throws IOException, JAXBException {
+	public void testXmlParser() throws Exception {
 		PostFetcher fetcher = new PostFetcher(new AddrToReader() {
 
 			@Override
@@ -40,5 +41,18 @@ public class PostFetcherTest {
 		Post post = fetcher.fetch("");
 		assertEquals("meta", post.getMeta());
 		assertEquals("body", post.getBody());
+	}
+
+	@Test
+	public void testXmlParserIgnoreEntity() throws Exception {
+		PostFetcher fetcher = new PostFetcher(new AddrToReader() {
+
+			@Override
+            public Reader reader(String addr) throws MalformedURLException, IOException {
+	            return new StringReader(postStrWithEntity);
+            }
+			
+		});
+		fetcher.fetch("");
 	}
 }
