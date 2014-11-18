@@ -30,7 +30,10 @@ public class PostDao {
 		stmt.setString(2, post.getMeta());
 		stmt.setDate(3, new Date(post.getFetchedTime().getTime()));
 		stmt.setString(4, item.getLink());
-		stmt.executeUpdate();
+		int rowCount = stmt.executeUpdate();
+		if (rowCount == 0) {
+			System.out.println("PostDao: failed to persist the post in " + item.getLink());
+		}
 	}
 
 	public Set<Post> restorePost(Item item) throws SQLException {
