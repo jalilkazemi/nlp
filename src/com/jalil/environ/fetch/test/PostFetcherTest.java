@@ -28,7 +28,7 @@ public class PostFetcherTest {
 	}
 
 	@Test
-	public void testXmlParser() throws Exception {
+	public void testXmlParser() throws IOException {
 		PostFetcher fetcher = new PostFetcher(new UriStreamer() {
 
 			@Override
@@ -43,7 +43,7 @@ public class PostFetcherTest {
 	}
 
 	@Test
-	public void testXmlParserIgnoreEntity() throws Exception {
+	public void testXmlParserIgnoreEntity() throws IOException {
 		PostFetcher fetcher = new PostFetcher(new UriStreamer() {
 
 			@Override

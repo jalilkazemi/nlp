@@ -4,33 +4,27 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.google.common.collect.Sets;
-import com.jalil.environ.html.Body;
-import com.jalil.environ.html.Division;
 import com.jalil.environ.html.Post;
 import com.jalil.environ.html.PostBuilder;
 
 public class PostFetcher {
 
-	private Unmarshaller jaxbUnmarshaller;
 	private Set<String> valuesOfAttributeClassInTagDivForBody; 
 	private Set<String> valuesOfAttributeClassInTagDivForMeta; 
-	private final AddrToReader addrToReader;
+	private final UriStreamer uriStreamer;
 	
-	public PostFetcher() throws JAXBException {
-		this(new AddrToReaderImpl());
+	public PostFetcher() {
+		this(new UriStreamerImpl());
 	}
 
-	public PostFetcher(AddrToReader addrToReader) throws JAXBException {
-		this.addrToReader = addrToReader;
-
-		JAXBContext jaxbContext = JAXBContext.newInstance(Body.class);
-		jaxbUnmarshaller = jaxbContext.createUnmarshaller();		
-		
+	public PostFetcher(UriStreamer uriStreamer) {
+		this.uriStreamer = uriStreamer;
 		setValidValuesForAttributeClassInTagDiv();
 	}
 	
@@ -39,18 +33,21 @@ public class PostFetcher {
 		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate");
 	}
 	
-	public Post fetch(String addr) throws JAXBException, IOException {
-		Body body = (Body) jaxbUnmarshaller.unmarshal(addrToReader.reader(addr));
+	public Post fetch(String addr) throws IOException {
+		Document doc = Jsoup.parse(uriStreamer.stream(addr), null, addr);
+		Elements divisions = doc.body().select("div");
+
 		PostBuilder builder = new PostBuilder();
 		boolean hasMeta = false, hasBody = false;
-		for (Division div : body.getDivisions()) {
+		for (int i = 0; i < divisions.size(); i++) {
 			if (hasMeta && hasBody)
 				break;
-			if (valuesOfAttributeClassInTagDivForBody.contains(div.getClassAttr())) {
-				builder.body(div.getContent());
+			Element division = divisions.get(i);
+			if (valuesOfAttributeClassInTagDivForBody.contains(division.className())) {
+				builder.body(division.text());
 				hasBody = true;
-			} else if (valuesOfAttributeClassInTagDivForMeta.contains(div.getClassAttr())) {
-				builder.meta(div.getContent());
+			} else if (valuesOfAttributeClassInTagDivForMeta.contains(division.className())) {
+				builder.meta(division.text());
 				hasMeta = true;
 			}
 		}
