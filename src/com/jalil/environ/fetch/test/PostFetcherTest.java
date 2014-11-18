@@ -2,19 +2,18 @@ package com.jalil.environ.fetch.test;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.net.MalformedURLException;
-
-import javax.xml.bind.JAXBException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.jalil.environ.fetch.AddrToReader;
+import com.jalil.environ.fetch.UriStreamer;
 import com.jalil.environ.fetch.PostFetcher;
 import com.jalil.environ.html.Post;
 
@@ -30,11 +29,11 @@ public class PostFetcherTest {
 
 	@Test
 	public void testXmlParser() throws Exception {
-		PostFetcher fetcher = new PostFetcher(new AddrToReader() {
+		PostFetcher fetcher = new PostFetcher(new UriStreamer() {
 
 			@Override
-            public Reader reader(String addr) throws MalformedURLException, IOException {
-	            return new StringReader(postStr);
+            public InputStream stream(String addr) throws MalformedURLException, IOException {
+	            return new ByteArrayInputStream(postStr.getBytes(StandardCharsets.UTF_8));
             }
 			
 		});
@@ -45,11 +44,11 @@ public class PostFetcherTest {
 
 	@Test
 	public void testXmlParserIgnoreEntity() throws Exception {
-		PostFetcher fetcher = new PostFetcher(new AddrToReader() {
+		PostFetcher fetcher = new PostFetcher(new UriStreamer() {
 
 			@Override
-            public Reader reader(String addr) throws MalformedURLException, IOException {
-	            return new StringReader(postStrWithEntity);
+            public InputStream stream(String addr) throws MalformedURLException, IOException {
+	            return new ByteArrayInputStream(postStrWithEntity.getBytes(StandardCharsets.UTF_8));
             }
 			
 		});
