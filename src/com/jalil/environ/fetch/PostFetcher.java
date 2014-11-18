@@ -16,6 +16,7 @@ import com.jalil.environ.html.PostBuilder;
 public class PostFetcher {
 
 	private Set<String> valuesOfAttributeClassInTagDivForBody; 
+	private Set<String> valuesOfAttributeIdInTagDivForBody;
 	private Set<String> valuesOfAttributeClassInTagDivForMeta; 
 	private final UriStreamer uriStreamer;
 	
@@ -29,8 +30,9 @@ public class PostFetcher {
 	}
 	
 	private void setValidValuesForAttributeClassInTagDiv() {
-		valuesOfAttributeClassInTagDivForBody = Sets.newHashSet("entry-content", "body");
-		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate");
+		valuesOfAttributeClassInTagDivForBody = Sets.newHashSet("entry-content", "body", "entry", "postcontent");
+		valuesOfAttributeIdInTagDivForBody = Sets.newHashSet("newsMainContent", "Body", "site_contents");
+		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate", "title", "posttitle");
 	}
 	
 	public Post fetch(String addr) throws IOException {
@@ -44,6 +46,9 @@ public class PostFetcher {
 				break;
 			Element division = divisions.get(i);
 			if (valuesOfAttributeClassInTagDivForBody.contains(division.className())) {
+				builder.body(division.text());
+				hasBody = true;
+			} else if (valuesOfAttributeIdInTagDivForBody.contains(division.id())) {
 				builder.body(division.text());
 				hasBody = true;
 			} else if (valuesOfAttributeClassInTagDivForMeta.contains(division.className())) {
