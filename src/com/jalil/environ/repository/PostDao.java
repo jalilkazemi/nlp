@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +29,11 @@ public class PostDao {
 	public void storePost(Item item, Post post) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_POST);
 		stmt.setString(1, post.getBody());
-		stmt.setString(2, post.getMeta());
+		if (post.getMeta() == null) {
+			stmt.setNull(2, Types.VARCHAR);
+		} else {
+			stmt.setString(2, post.getMeta());
+		}
 		stmt.setDate(3, new Date(post.getFetchedTime().getTime()));
 		stmt.setString(4, item.getLink());
 		int rowCount = stmt.executeUpdate();
