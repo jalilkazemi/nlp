@@ -36,7 +36,8 @@ public class NewsCollector {
 	        	}
 	        }
         } catch (Exception e) {
-	        System.out.println("Failed to collect news: " + e.getMessage());
+	        System.err.println("Failed to collect news: ");
+	        e.printStackTrace();
         }
 	}
 }
