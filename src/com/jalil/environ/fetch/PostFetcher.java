@@ -51,6 +51,8 @@ public class PostFetcher {
 				hasMeta = true;
 			}
 		}
+
+		System.out.println("PostFetcher: downloaded and parsed : " + addr);
 		return builder.fetchedTime(new Date()).build();
 	}
 }
