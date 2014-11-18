@@ -25,6 +25,10 @@ public class RssFetcher {
 	}
 	
 	public RssFeed fetch(String addr) throws IOException, JAXBException {
-		return (RssFeed) jaxbUnmarshaller.unmarshal(uriStreamer.stream(addr));
+		RssFeed rss = (RssFeed) jaxbUnmarshaller.unmarshal(uriStreamer.stream(addr));
+		System.out.println("RssFetcher: downloaded and parsed : " + 
+							addr + " containing " + rss.getChannel().getItems().size() + 
+							" items");
+		return rss;
 	}
 }
