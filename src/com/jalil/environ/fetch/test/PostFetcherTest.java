@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class PostFetcherTest {
 
 			@Override
             public InputStream stream(String addr) throws MalformedURLException, IOException {
-	            return new ByteArrayInputStream(postStr.getBytes(StandardCharsets.UTF_8));
+	            return new ByteArrayInputStream(postStr.getBytes(Charset.defaultCharset()));
             }
 			
 		});
@@ -48,7 +48,7 @@ public class PostFetcherTest {
 
 			@Override
             public InputStream stream(String addr) throws MalformedURLException, IOException {
-	            return new ByteArrayInputStream(postStrWithEntity.getBytes(StandardCharsets.UTF_8));
+	            return new ByteArrayInputStream(postStrWithEntity.getBytes(Charset.defaultCharset()));
             }
 			
 		});

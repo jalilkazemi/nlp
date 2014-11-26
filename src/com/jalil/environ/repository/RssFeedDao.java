@@ -9,7 +9,6 @@ import java.sql.Types;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import com.jalil.environ.rss.Channel;
 import com.jalil.environ.rss.Item;
@@ -91,7 +90,15 @@ public class RssFeedDao {
 			stmt.addBatch();
 		}
 		int[] rowCounts = stmt.executeBatch();
-		int totalRowCount = IntStream.of(rowCounts).sum();
+		int totalRowCount = sum(rowCounts);
 		System.out.println("RssFeedDao: persited " + totalRowCount + " items");
+	}
+	
+	private int sum(int[] values) {
+		int sum = 0;
+		for (int v : values) {
+			sum += v;
+		}
+		return sum;
 	}
 }

@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class RssFetcherTest {
 
 			@Override
             public InputStream stream(String addr) throws MalformedURLException, IOException {
-	            return new ByteArrayInputStream(rssStr.getBytes(StandardCharsets.UTF_8));
+	            return new ByteArrayInputStream(rssStr.getBytes(Charset.defaultCharset()));
             }
 			
 		});
