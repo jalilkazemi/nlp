@@ -2,6 +2,8 @@ package com.jalil.environ.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import static com.jalil.environ.Configuration.*;
 
 public class SQLiteJDBC {
@@ -20,4 +22,8 @@ public class SQLiteJDBC {
 	public static Connection getConnection() {
 		return con;
 	}
+
+	public static void closeConnection() {
+		try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+    }
 }

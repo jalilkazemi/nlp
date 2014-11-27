@@ -18,20 +18,24 @@ public class Run {
 	
 	public static void main(String[] args) throws JAXBException {
 		Connection con = SQLiteJDBC.getConnection();
-		Migrator migrator = new Migrator(migrationDirectory, con);
-		
-		RssFeedDao rssDao = new RssFeedDao(con);
-		PostDao postDao = new PostDao(con);
-		RssFetcher rssFetcher = new RssFetcher();
-		PostFetcher postFetcher = new PostFetcher();
-		
-		NewsCollector newsCollector = new NewsCollector(rssFetcher, postFetcher, rssDao, postDao);
-		
 		try {
-			migrator.applyUpdates();
-			newsCollector.collect();
-		} catch (Exception e) {
-			e.printStackTrace();
+			Migrator migrator = new Migrator(migrationDirectory, con);
+			
+			RssFeedDao rssDao = new RssFeedDao(con);
+			PostDao postDao = new PostDao(con);
+			RssFetcher rssFetcher = new RssFetcher();
+			PostFetcher postFetcher = new PostFetcher();
+			
+			NewsCollector newsCollector = new NewsCollector(rssFetcher, postFetcher, rssDao, postDao);
+			
+			try {
+				migrator.applyUpdates();
+				newsCollector.collect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} finally {
+			SQLiteJDBC.closeConnection(); 
 		}
 	}
 }
