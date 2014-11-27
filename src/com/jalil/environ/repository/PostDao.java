@@ -27,32 +27,40 @@ public class PostDao {
 	
 	public void storePost(Item item, Post post) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_POST);
-		stmt.setString(1, post.getBody());
-		if (post.getMeta() == null) {
-			stmt.setNull(2, Types.VARCHAR);
-		} else {
-			stmt.setString(2, post.getMeta());
-		}
-		stmt.setDate(3, new Date(post.getFetchedTime().getTime()));
-		stmt.setString(4, item.getLink());
-		int rowCount = stmt.executeUpdate();
-		if (rowCount == 0) {
-			System.out.println("PostDao: failed to persist the post in " + item.getLink());
+		try {
+			stmt.setString(1, post.getBody());
+			if (post.getMeta() == null) {
+				stmt.setNull(2, Types.VARCHAR);
+			} else {
+				stmt.setString(2, post.getMeta());
+			}
+			stmt.setDate(3, new Date(post.getFetchedTime().getTime()));
+			stmt.setString(4, item.getLink());
+			int rowCount = stmt.executeUpdate();
+			if (rowCount == 0) {
+				System.out.println("PostDao: failed to persist the post in " + item.getLink());
+			}
+		} finally {
+			stmt.close();
 		}
 	}
 
 	public Set<Post> restorePost(Item item) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(SELECT_POST);
-		stmt.setString(1, item.getLink());
-		ResultSet rs = stmt.executeQuery();
-		Set<Post> posts = new HashSet<Post>();
-		while (rs.next()) {
-			posts.add(new PostBuilder().
-					body(rs.getString("body")).
-					meta(rs.getString("meta")).
-					fetchedTime(rs.getDate("fetched_datetime")).
-					build());
+		try {
+			stmt.setString(1, item.getLink());
+			ResultSet rs = stmt.executeQuery();
+			Set<Post> posts = new HashSet<Post>();
+			while (rs.next()) {
+				posts.add(new PostBuilder().
+						body(rs.getString("body")).
+						meta(rs.getString("meta")).
+						fetchedTime(rs.getDate("fetched_datetime")).
+						build());
+			}
+			return posts;
+		} finally {
+			stmt.close();
 		}
-		return posts;
 	}
 }
