@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.jalil.environ.rss.Channel;
@@ -31,18 +30,26 @@ public class RssFeedDao {
 	
 	public Set<String> restoreRssPages() throws SQLException {
 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery(SELECT_RSS);
-		Set<String> rssPages = new HashSet<String>();
-		while (rs.next()) {
-			rssPages.add(rs.getString("link"));
+		try {
+			ResultSet rs = stmt.executeQuery(SELECT_RSS);
+			Set<String> rssPages = new HashSet<String>();
+			while (rs.next()) {
+				rssPages.add(rs.getString("link"));
+			}
+			return rssPages;
+		} finally {
+			stmt.close();
 		}
-		return rssPages;
 	}
 	
 	public void addRssPage(String rssLink) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_RSS);
-		stmt.setString(1, rssLink);
-		stmt.executeUpdate();
+		try {
+			stmt.setString(1, rssLink);
+			stmt.executeUpdate();
+		} finally {
+			stmt.close();
+		}
 	}
 	
 	public void storeRssFeed(final RssFeed rssFeed) throws SQLException {
@@ -57,41 +64,49 @@ public class RssFeedDao {
 	
 	private void storeChannel(Channel channel) throws SQLException {
 		PreparedStatement stmt = con.prepareStatement(INSERT_CHANNEL);
-		stmt.setString(1, channel.getTitle());
-		stmt.setString(2, channel.getLink());
-		String description = channel.getDescription();
-		if (description == null) {
-			stmt.setNull(3, Types.VARCHAR);
-		} else {
-			stmt.setString(3, description);			
-		}
-		String language = channel.getLanguage();
-		if (language == null) {
-			stmt.setNull(4, Types.CHAR);
-		} else {
-			stmt.setString(4, channel.getLanguage());
-		}
-		
-		stmt.executeUpdate();
-	}
-	
-	private void storeItems(String channelLink, Set<Item> items) throws SQLException {
-		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
-		for (Item item : items) {
-			stmt.setString(1, item.getTitle());
-			stmt.setString(2, item.getLink());
-			String description = item.getDescription();
+		try {
+			stmt.setString(1, channel.getTitle());
+			stmt.setString(2, channel.getLink());
+			String description = channel.getDescription();
 			if (description == null) {
 				stmt.setNull(3, Types.VARCHAR);
 			} else {
 				stmt.setString(3, description);			
 			}
-			stmt.setString(4, channelLink);
-			stmt.addBatch();
+			String language = channel.getLanguage();
+			if (language == null) {
+				stmt.setNull(4, Types.CHAR);
+			} else {
+				stmt.setString(4, channel.getLanguage());
+			}
+			
+			stmt.executeUpdate();
+		} finally {
+			stmt.close();
 		}
-		int[] rowCounts = stmt.executeBatch();
-		int totalRowCount = sum(rowCounts);
-		System.out.println("RssFeedDao: persited " + totalRowCount + " items");
+	}
+	
+	private void storeItems(String channelLink, Set<Item> items) throws SQLException {
+		PreparedStatement stmt = con.prepareStatement(INSERT_ITEM);
+		try {
+			for (Item item : items) {
+				stmt.setString(1, item.getTitle());
+				stmt.setString(2, item.getLink());
+				String description = item.getDescription();
+				if (description == null) {
+					stmt.setNull(3, Types.VARCHAR);
+				} else {
+					stmt.setString(3, description);			
+				}
+				stmt.setString(4, channelLink);
+				stmt.addBatch();
+			}
+			int[] rowCounts = stmt.executeBatch();
+			int totalRowCount = sum(rowCounts);
+			System.out.println("RssFeedDao: persited " + totalRowCount + " items");
+		} finally {
+			stmt.close();
+		}
 	}
 	
 	private int sum(int[] values) {
