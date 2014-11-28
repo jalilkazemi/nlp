@@ -39,6 +39,8 @@ public class PostDao {
 			int rowCount = stmt.executeUpdate();
 			if (rowCount == 0) {
 				System.out.println("PostDao: failed to persist the post in " + item.getLink());
+			} else {
+				System.out.println("PostDao: persisted a post");
 			}
 		} finally {
 			stmt.close();
