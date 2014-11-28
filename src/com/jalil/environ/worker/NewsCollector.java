@@ -50,6 +50,14 @@ public class NewsCollector {
         List<Future<Set<Item>>> itemsFutures = submitRssStorages(rssFutures);
         List<Pair<Item, Future<Post>>> itemPosts = submitPostDownloads(itemsFutures);
         List<Future<Boolean>> postFutures = submitPostStorages(itemPosts);
+        for (Future<Boolean> postFuture : postFutures) {
+        	try {
+        		postFuture.get();
+        	} catch (Exception e) {
+    	        System.err.println("Failed to store post: ");
+    	        e.printStackTrace();
+        	}
+        }
 	}
 	
 	private List<Future<RssFeed>> submitRssDownloads(Set<String> rssPages) {
