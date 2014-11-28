@@ -103,7 +103,7 @@ public class RssFeedDao {
 			}
 			int[] rowCounts = stmt.executeBatch();
 			int totalRowCount = sum(rowCounts);
-			System.out.println("RssFeedDao: persited " + totalRowCount + " items");
+			System.out.println("RssFeedDao: persisted " + totalRowCount + " items");
 		} finally {
 			stmt.close();
 		}
