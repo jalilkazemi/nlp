@@ -46,5 +46,19 @@ public class NewsCollector {
 	        e.printStackTrace();
 	        return;
         }
+        List<Future<RssFeed>> rssFutures = submitRssDownloads(rssPages);
+	}
+	
+	private List<Future<RssFeed>> submitRssDownloads(Set<String> rssPages) {
+        List<Future<RssFeed>> rssFutures = new LinkedList<Future<RssFeed>>();
+        for (final String rssPage : rssPages) {
+        	rssFutures.add(networkBus.submit(new Callable<RssFeed>() {
+
+				@Override
+                public RssFeed call() throws Exception {
+                    return rssFetcher.fetch(rssPage);
+				}}));
+        }
+        return rssFutures;
 	}
 }
