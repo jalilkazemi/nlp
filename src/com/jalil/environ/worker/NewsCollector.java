@@ -48,6 +48,7 @@ public class NewsCollector {
         }
         List<Future<RssFeed>> rssFutures = submitRssDownloads(rssPages);
         List<Future<Set<Item>>> itemsFutures = submitRssStorages(rssFutures);
+        List<Pair<Item, Future<Post>>> itemPosts = submitPostDownloads(itemsFutures);
 	}
 	
 	private List<Future<RssFeed>> submitRssDownloads(Set<String> rssPages) {
@@ -87,5 +88,26 @@ public class NewsCollector {
         	}
         }
         return itemsFutures;
+	}
+	
+	private List<Pair<Item, Future<Post>>> submitPostDownloads(List<Future<Set<Item>>> itemsFutures) {
+        List<Pair<Item, Future<Post>>> itemPosts = new LinkedList<Pair<Item, Future<Post>>>();
+        for (Future<Set<Item>> itemsFuture : itemsFutures) {
+        	try {
+	        	Set<Item> items = itemsFuture.get();
+	        	for (final Item item : items) {
+		        	itemPosts.add(new Pair<Item, Future<Post>>(item, networkBus.submit(new Callable<Post>() {
+	
+						@Override
+	                    public Post call() throws Exception {
+							return postFetcher.fetch(item.getLink());
+						}})));
+	        	}
+        	} catch (Exception e) {
+       	        System.err.println("Failed to store rss items: ");
+    	        e.printStackTrace();      		
+        	}
+        }
+        return itemPosts;
 	}
 }
