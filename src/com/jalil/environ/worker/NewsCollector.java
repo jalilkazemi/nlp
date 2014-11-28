@@ -1,9 +1,16 @@
 package com.jalil.environ.worker;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import com.jalil.environ.fetch.PostFetcher;
 import com.jalil.environ.fetch.RssFetcher;
+import com.jalil.environ.helper.Pair;
+import com.jalil.environ.html.Post;
 import com.jalil.environ.repository.PostDao;
 import com.jalil.environ.repository.RssFeedDao;
 import com.jalil.environ.rss.Item;
@@ -31,20 +38,13 @@ public class NewsCollector {
 	}
 	
 	public void collect() {
+		Set<String> rssPages = null;
 		try {
-	        Set<String> rssPages = rssDao.restoreRssPages();
-	        for (String rssPage : rssPages) {
-	        	RssFeed rss = rssFetcher.fetch(rssPage);
-	        	rssDao.storeRssFeed(rss);
-	        	for (Item item : rss.getChannel().getItems()) {
-	        		if (postDao.restorePost(item).isEmpty()) {
-	        			postDao.storePost(item, postFetcher.fetch(item.getLink()));
-	        		}
-	        	}
-	        }
+	        rssPages = rssDao.restoreRssPages();
         } catch (Exception e) {
-	        System.err.println("Failed to collect news: ");
+	        System.err.println("Failed to restore rss pages: ");
 	        e.printStackTrace();
+	        return;
         }
 	}
 }
