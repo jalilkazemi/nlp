@@ -1,22 +1,29 @@
 package com.jalil.environ.worker;
 
 import java.util.Set;
+
 import com.jalil.environ.fetch.PostFetcher;
 import com.jalil.environ.fetch.RssFetcher;
 import com.jalil.environ.repository.PostDao;
 import com.jalil.environ.repository.RssFeedDao;
 import com.jalil.environ.rss.Item;
 import com.jalil.environ.rss.RssFeed;
+import com.jalil.environ.server.Bus;
 
 public class NewsCollector {
 	
+	private final Bus databaseBus;
+	private final Bus networkBus;
 	private final RssFetcher rssFetcher;
 	private final PostFetcher postFetcher;
 	private final RssFeedDao rssDao;
 	private final PostDao postDao;
 	
-	public NewsCollector(RssFetcher rssFetcher, PostFetcher postFetcher,
+	public NewsCollector(Bus databaseBus, Bus networkBus, 
+						RssFetcher rssFetcher, PostFetcher postFetcher,
 						RssFeedDao rssDao, PostDao postDao) {
+		this.databaseBus = databaseBus;
+		this.networkBus = networkBus;
 		this.rssFetcher = rssFetcher;
 		this.postFetcher = postFetcher;
 		this.rssDao = rssDao;

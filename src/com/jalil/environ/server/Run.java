@@ -28,7 +28,8 @@ public class Run {
 			Bus databaseBus = Bus.getDatabaseBus();
 			Bus networkBus = Bus.getNetworkBus();
 			
-			NewsCollector newsCollector = new NewsCollector(rssFetcher, postFetcher, rssDao, postDao);
+			NewsCollector newsCollector = new NewsCollector(databaseBus, networkBus,
+					rssFetcher, postFetcher, rssDao, postDao);
 			
 			try {
 				migrator.applyUpdates();
