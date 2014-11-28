@@ -49,6 +49,7 @@ public class NewsCollector {
         List<Future<RssFeed>> rssFutures = submitRssDownloads(rssPages);
         List<Future<Set<Item>>> itemsFutures = submitRssStorages(rssFutures);
         List<Pair<Item, Future<Post>>> itemPosts = submitPostDownloads(itemsFutures);
+        List<Future<Boolean>> postFutures = submitPostStorages(itemPosts);
 	}
 	
 	private List<Future<RssFeed>> submitRssDownloads(Set<String> rssPages) {
@@ -110,4 +111,25 @@ public class NewsCollector {
         }
         return itemPosts;
 	}
+
+	private List<Future<Boolean>> submitPostStorages(List<Pair<Item, Future<Post>>> itemPostFutures) {
+		List<Future<Boolean>> postFutures = new LinkedList<Future<Boolean>>();
+		for (Pair<Item, Future<Post>> itemPostFuture : itemPostFutures) {
+			try {
+				final Item item = itemPostFuture.getFirst();
+	        	final Post post = itemPostFuture.getSecond().get();
+	        	postFutures.add(databaseBus.submit(new Callable<Boolean>() {
+	
+					@Override
+	                public Boolean call() throws Exception {
+						postDao.storePost(item, post);
+						return true;
+	                }}));
+			} catch (Exception e) {
+       	        System.err.println("Failed to fetch posts: ");
+    	        e.printStackTrace();      		
+        	}
+        }    
+		return postFutures;
+    }
 }
