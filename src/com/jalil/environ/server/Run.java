@@ -17,14 +17,16 @@ import com.jalil.environ.worker.NewsCollector;
 public class Run {
 	
 	public static void main(String[] args) throws JAXBException {
-		Connection con = SQLiteJDBC.getConnection();
 		try {
+			Connection con = SQLiteJDBC.getConnection();
 			Migrator migrator = new Migrator(migrationDirectory, con);
 			
 			RssFeedDao rssDao = new RssFeedDao(con);
 			PostDao postDao = new PostDao(con);
 			RssFetcher rssFetcher = new RssFetcher();
 			PostFetcher postFetcher = new PostFetcher();
+			Bus databaseBus = Bus.getDatabaseBus();
+			Bus networkBus = Bus.getNetworkBus();
 			
 			NewsCollector newsCollector = new NewsCollector(rssFetcher, postFetcher, rssDao, postDao);
 			
@@ -35,7 +37,8 @@ public class Run {
 				e.printStackTrace();
 			}
 		} finally {
-			SQLiteJDBC.closeConnection(); 
+			SQLiteJDBC.closeConnection();
+			Bus.closeAllBuses();
 		}
 	}
 }
