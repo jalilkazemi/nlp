@@ -47,6 +47,7 @@ public class NewsCollector {
 	        return;
         }
         List<Future<RssFeed>> rssFutures = submitRssDownloads(rssPages);
+        List<Future<Set<Item>>> itemsFutures = submitRssStorages(rssFutures);
 	}
 	
 	private List<Future<RssFeed>> submitRssDownloads(Set<String> rssPages) {
@@ -60,5 +61,31 @@ public class NewsCollector {
 				}}));
         }
         return rssFutures;
+	}
+	
+	private List<Future<Set<Item>>> submitRssStorages(List<Future<RssFeed>> rssFutures) {
+        List<Future<Set<Item>>> itemsFutures = new LinkedList<Future<Set<Item>>>(); 
+        for (Future<RssFeed> rssFuture : rssFutures) {
+        	try {
+	        	final RssFeed rss = rssFuture.get();
+	        	itemsFutures.add(databaseBus.submit(new Callable<Set<Item>>() {
+	
+					@Override
+	                public Set<Item> call() throws Exception {
+			        	rssDao.storeRssFeed(rss);
+			        	Set<Item> itemsForDownload = new HashSet<Item>();
+			        	for (Item item : rss.getChannel().getItems()) {
+			        		if (postDao.restorePost(item).isEmpty()) {
+			        			itemsForDownload.add(item);
+			        		}
+			        	}
+	                    return itemsForDownload;
+					}}));
+        	} catch (Exception e) {
+    	        System.err.println("Failed to fetch rss page: ");
+    	        e.printStackTrace();      		
+        	}
+        }
+        return itemsFutures;
 	}
 }
