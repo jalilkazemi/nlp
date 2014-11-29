@@ -30,9 +30,11 @@ public class PostFetcher {
 	}
 	
 	private void setValidValuesForAttributeClassInTagDiv() {
-		valuesOfAttributeClassInTagDivForBody = Sets.newHashSet("entry-content", "body", "entry", "postcontent");
+		valuesOfAttributeClassInTagDivForBody = Sets.newHashSet("entry-content", "body", "entry", "postcontent", 
+				"full-text", "nwstxtmainpane", "BodyText");
 		valuesOfAttributeIdInTagDivForBody = Sets.newHashSet("newsMainContent", "Body", "site_contents");
-		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate", "title", "posttitle");
+		valuesOfAttributeClassInTagDivForMeta = Sets.newHashSet("entry-meta", "publishDate", "title", "posttitle", 
+				"news_nav news_pdate_c", "meta", "nwstxtdt", "NewsStatusBar", "newsPubDate");
 	}
 	
 	public Post fetch(String addr) throws IOException {
