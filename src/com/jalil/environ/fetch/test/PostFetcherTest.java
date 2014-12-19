@@ -16,6 +16,7 @@ import org.junit.runners.JUnit4;
 import com.jalil.environ.fetch.UriStreamer;
 import com.jalil.environ.fetch.PostFetcher;
 import com.jalil.environ.html.Post;
+import com.jalil.environ.rss.Item;
 
 @RunWith(JUnit4.class)
 public class PostFetcherTest {
@@ -37,7 +38,7 @@ public class PostFetcherTest {
             }
 			
 		});
-		Post post = fetcher.fetch("");
+		Post post = fetcher.fetch(new Item());
 		assertEquals("meta", post.getMeta());
 		assertEquals("body", post.getBody());
 	}
@@ -52,6 +53,6 @@ public class PostFetcherTest {
             }
 			
 		});
-		fetcher.fetch("");
+		fetcher.fetch(new Item());
 	}
 }

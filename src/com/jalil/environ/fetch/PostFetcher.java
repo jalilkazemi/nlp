@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import com.google.common.collect.Sets;
 import com.jalil.environ.html.Post;
 import com.jalil.environ.html.PostBuilder;
+import com.jalil.environ.rss.Item;
 
 public class PostFetcher {
 
@@ -37,11 +38,12 @@ public class PostFetcher {
 				"news_nav news_pdate_c", "meta", "nwstxtdt", "NewsStatusBar", "newsPubDate");
 	}
 	
-	public Post fetch(String addr) throws IOException {
+	public Post fetch(Item item) throws IOException {
+		String addr = item.getLink();
 		Document doc = Jsoup.parse(uriStreamer.stream(addr), null, addr);
 		Elements divisions = doc.body().select("div");
 
-		PostBuilder builder = new PostBuilder();
+		PostBuilder builder = new PostBuilder().item(item);
 		boolean hasMeta = false, hasBody = false;
 		for (int i = 0; i < divisions.size(); i++) {
 			if (hasMeta && hasBody)

@@ -15,7 +15,7 @@ public class Item {
 	@XmlElement(name = "description")
 	private String description;
 	
-	private Item() {}
+	public Item() {}
 	
 	public Item(String title, String link, String description) {
 		this.title = title;

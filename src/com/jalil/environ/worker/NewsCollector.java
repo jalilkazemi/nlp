@@ -109,7 +109,7 @@ public class NewsCollector {
 	
 						@Override
 	                    public Post call() throws Exception {
-							return postFetcher.fetch(item.getLink());
+							return postFetcher.fetch(item);
 						}})));
 	        	}
         	} catch (Exception e) {
