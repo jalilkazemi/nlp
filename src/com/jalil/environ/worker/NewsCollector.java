@@ -9,7 +9,6 @@ import java.util.concurrent.Future;
 
 import com.jalil.environ.fetch.PostFetcher;
 import com.jalil.environ.fetch.RssFetcher;
-import com.jalil.environ.helper.Pair;
 import com.jalil.environ.html.Post;
 import com.jalil.environ.repository.PostDao;
 import com.jalil.environ.repository.RssFeedDao;
@@ -48,7 +47,7 @@ public class NewsCollector {
         }
         List<Future<RssFeed>> rssFutures = submitRssDownloads(rssPages);
         List<Future<Set<Item>>> itemsFutures = submitRssStorages(rssFutures);
-        List<Pair<Item, Future<Post>>> itemPosts = submitPostDownloads(itemsFutures);
+        List<Future<Post>> itemPosts = submitPostDownloads(itemsFutures);
         List<Future<Boolean>> postFutures = submitPostStorages(itemPosts);
         for (Future<Boolean> postFuture : postFutures) {
         	try {
@@ -99,18 +98,18 @@ public class NewsCollector {
         return itemsFutures;
 	}
 	
-	private List<Pair<Item, Future<Post>>> submitPostDownloads(List<Future<Set<Item>>> itemsFutures) {
-        List<Pair<Item, Future<Post>>> itemPosts = new LinkedList<Pair<Item, Future<Post>>>();
+	private List<Future<Post>> submitPostDownloads(List<Future<Set<Item>>> itemsFutures) {
+        List<Future<Post>> itemPosts = new LinkedList<Future<Post>>();
         for (Future<Set<Item>> itemsFuture : itemsFutures) {
         	try {
 	        	Set<Item> items = itemsFuture.get();
 	        	for (final Item item : items) {
-		        	itemPosts.add(new Pair<Item, Future<Post>>(item, networkBus.submit(new Callable<Post>() {
+		        	itemPosts.add(networkBus.submit(new Callable<Post>() {
 	
 						@Override
 	                    public Post call() throws Exception {
 							return postFetcher.fetch(item);
-						}})));
+						}}));
 	        	}
         	} catch (Exception e) {
        	        System.err.println("Failed to store rss items: ");
@@ -120,17 +119,16 @@ public class NewsCollector {
         return itemPosts;
 	}
 
-	private List<Future<Boolean>> submitPostStorages(List<Pair<Item, Future<Post>>> itemPostFutures) {
-		List<Future<Boolean>> postFutures = new LinkedList<Future<Boolean>>();
-		for (Pair<Item, Future<Post>> itemPostFuture : itemPostFutures) {
+	private List<Future<Boolean>> submitPostStorages(List<Future<Post>> postFutures) {
+		List<Future<Boolean>> nullFutures = new LinkedList<Future<Boolean>>();
+		for (Future<Post> postFuture : postFutures) {
 			try {
-				final Item item = itemPostFuture.getFirst();
-	        	final Post post = itemPostFuture.getSecond().get();
-	        	postFutures.add(databaseBus.submit(new Callable<Boolean>() {
+	        	final Post post = postFuture.get();
+	        	nullFutures.add(databaseBus.submit(new Callable<Boolean>() {
 	
 					@Override
 	                public Boolean call() throws Exception {
-						postDao.storePost(item, post);
+						postDao.storePost(post);
 						return true;
 	                }}));
 			} catch (Exception e) {
@@ -138,6 +136,6 @@ public class NewsCollector {
     	        e.printStackTrace();      		
         	}
         }    
-		return postFutures;
+		return nullFutures;
     }
 }

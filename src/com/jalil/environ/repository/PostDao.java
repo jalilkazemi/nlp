@@ -22,14 +22,15 @@ public class PostDao {
 	private final static String INSERT_POST = "INSERT OR IGNORE INTO posts(item_pk, body, meta, fetched_datetime) " +
 										"SELECT id, ?, ?, ? FROM items WHERE link = ?";
 	private final static String SELECT_POST = "SELECT body, meta, fetched_datetime FROM posts JOIN items ON item_pk = items.id WHERE link = ?";
-
+	
 	private final Connection con;
 	
 	public PostDao(Connection con) {
 		this.con = con;
 	}
 	
-	public void storePost(Item item, Post post) throws SQLException {
+	public void storePost(Post post) throws SQLException {
+		Item item = post.getItem();
 		PreparedStatement stmt = con.prepareStatement(INSERT_POST);
 		try {
 			stmt.setString(1, post.getBody());
