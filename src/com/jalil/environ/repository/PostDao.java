@@ -5,20 +5,24 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.jalil.environ.html.Post;
 import com.jalil.environ.html.PostBuilder;
 import com.jalil.environ.rss.Item;
+import com.jalil.environ.rss.builder.ItemBuilder;
 
 public class PostDao {
 	
 	private final static String INSERT_POST = "INSERT OR IGNORE INTO posts(item_pk, body, meta, fetched_datetime) " +
 										"SELECT id, ?, ?, ? FROM items WHERE link = ?";
 	private final static String SELECT_POST = "SELECT body, meta, fetched_datetime FROM posts JOIN items ON item_pk = items.id WHERE link = ?";
-	
+
 	private final Connection con;
 	
 	public PostDao(Connection con) {
@@ -54,7 +58,7 @@ public class PostDao {
 			ResultSet rs = stmt.executeQuery();
 			Set<Post> posts = new HashSet<Post>();
 			while (rs.next()) {
-				posts.add(new PostBuilder().
+				posts.add(new PostBuilder().item(item).
 						body(rs.getString("body")).
 						meta(rs.getString("meta")).
 						fetchedTime(rs.getDate("fetched_datetime")).
