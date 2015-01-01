@@ -59,4 +59,10 @@ public class ReverseSequenceCounter<T> {
 	    return "ReverseSequenceCounter [totalCount=" + totalCount
 	            + ", counter=" + counter + "]";
     }
+
+	public Set<T> lastItemSet() {
+	    if (counter == null)
+	    	return Collections.EMPTY_SET;
+		return counter.keySet();
+    }
 }
