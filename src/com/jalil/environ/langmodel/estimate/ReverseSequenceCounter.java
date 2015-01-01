@@ -65,4 +65,56 @@ public class ReverseSequenceCounter<T> {
 	    	return Collections.EMPTY_SET;
 		return counter.keySet();
     }
+
+	public Iterator<Entry<List<T>, Integer>> sequenceCountIterator() {
+		if (counter == null) {
+			return new Iterator<Entry<List<T>, Integer>>() {
+
+				@Override
+	            public boolean hasNext() {
+		            return false;
+	            }
+
+				@Override
+	            public Entry<List<T>, Integer> next() {
+		            throw new NoSuchElementException();
+	            }
+
+				@Override
+	            public void remove() {
+					throw new UnsupportedOperationException();
+	            }};			
+		}
+		
+	    final Iterator<Entry<T, ReverseSequenceCounter<T>>> iter = counter.entrySet().iterator();
+		return new Iterator<Entry<List<T>, Integer>>() {
+
+			private Iterator<Entry<List<T>, Integer>> subIter = null;
+			private T lastTermInSequence = null;
+			
+			@Override
+            public boolean hasNext() {
+	            return iter.hasNext() || (subIter != null && subIter.hasNext());
+            }
+
+			@Override
+            public Entry<List<T>, Integer> next() {
+				if (subIter == null || !subIter.hasNext()) {
+					Entry<T, ReverseSequenceCounter<T>> item = iter.next();
+					lastTermInSequence = item.getKey();
+					subIter = item.getValue().sequenceCountIterator();
+					return new Pair<List<T>, Integer>(Lists.newArrayList(lastTermInSequence), item.getValue().count());
+				} else {
+					Entry<List<T>, Integer> subItem = subIter.next();
+					List<T> sequence = subItem.getKey();
+					sequence.add(lastTermInSequence);
+					return new Pair<List<T>, Integer>(sequence, subItem.getValue());
+				}
+            }
+
+			@Override
+            public void remove() {
+				throw new UnsupportedOperationException();
+            }};
+    }
 }
