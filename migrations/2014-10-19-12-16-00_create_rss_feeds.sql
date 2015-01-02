@@ -16,7 +16,7 @@ CREATE TABLE items(
 
 CREATE INDEX idx_items_channel ON items(channel_pk);
 
-CREATE TABLE fetches(
+CREATE TABLE fetchs(
     id INTEGER PRIMARY KEY,
     item_pk INTEGER NOT NULL,
     body TEXT NOT NULL,
