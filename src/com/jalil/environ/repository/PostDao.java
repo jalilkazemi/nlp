@@ -23,6 +23,11 @@ public class PostDao {
 										"SELECT id, ?, ?, ? FROM items WHERE link = ?";
 	private final static String SELECT_POST = "SELECT body, meta, fetched_datetime FROM posts JOIN items ON item_pk = items.id WHERE link = ?";
 	
+	private final static String SELECT_UNPARSED_POSTS = "SELECT title, link, description, body, meta, fetched_datetime "
+			+ " FROM items JOIN posts ON items.id = item_pk "
+			+ " LEFT JOIN parsed_posts ON posts.id = parsed_post_pk "
+			+ " WHERE parsed_post_pk IS NULL";
+
 	private final Connection con;
 	
 	public PostDao(Connection con) {
@@ -69,5 +74,28 @@ public class PostDao {
 		} finally {
 			stmt.close();
 		}
+	}
+	
+	public List<Post> restoreUnparsedPosts() throws SQLException {
+		Statement stmt = con.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery(SELECT_UNPARSED_POSTS);
+			List<Post> posts = new LinkedList<Post>();
+			while (rs.next()) {
+				Item item = new ItemBuilder().
+						title(rs.getString("title")).
+						link(rs.getString("link")).
+						description(rs.getString("description")).
+						build();
+				posts.add(new PostBuilder().item(item).
+						body(rs.getString("body")).
+						meta(rs.getString("meta")).
+						fetchedTime(rs.getDate("fetched_datetime")).
+						build());
+			}
+			return posts;
+		} finally {
+			stmt.close();
+		}		
 	}
 }
