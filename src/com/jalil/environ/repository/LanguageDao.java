@@ -26,6 +26,7 @@ public class LanguageDao {
 	private final static String INSERT_SENTENCE_DELIMITER = "INSERT INTO delimiters(symbol, is_period) VALUES(?, 1)";
 	private final static String CLEAN_SENTENCE_DELIMITERS = "DELETE FROM delimiters WHERE is_period = 1";
 
+	private final static String SELECT_SENTENCE_COUNT = "SELECT count FROM sentence_count";
 	private final static String UPDATE_SENTENCE_COUNT = "UPDATE sentence_count SET count = count + ?";
 	
 	private final static String INSERT_WORD = "INSERT OR IGNORE INTO words(word) VALUES(?)";
@@ -228,4 +229,11 @@ public class LanguageDao {
 		if (e != null)
 			throw e;
     }
+
+	public int restoreNumSentences() throws SQLException {
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(SELECT_SENTENCE_COUNT);
+		rs.next();
+		return rs.getInt("count");
+	}
 }
